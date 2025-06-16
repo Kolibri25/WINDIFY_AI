@@ -13,6 +13,10 @@ Classes:
 
 Some comments asking and answering what the code does but not looking into why the architecture is designed this way.
 
+Usage:
+Input needs to be of shape such that the downsampling does not result in dimensions that are not divisible by 2, as the architecture relies on downsampling and upsampling operations that halve and double the dimensions respectively.
+Example: 64x64 input will work, but 65x65 will not.
+
 """
 import torch.nn.functional as F
 import torch.nn as nn
