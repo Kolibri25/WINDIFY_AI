@@ -9,13 +9,15 @@ Classes:
 - OutConv:
     Final convolution layer to produce the output with the desired number of channels.
 - UNet:
-    The main U-Net architecture that combines the above components to create a complete model for image segmentation tasks.
+    The main U-Net architecture that combines the above components to create a model for image segmentation tasks.
 
 Some comments asking and answering what the code does but not looking into why the architecture is designed this way.
 
 Usage:
 Input needs to be of shape such that the downsampling does not result in dimensions that are not divisible by 2, as the architecture relies on downsampling and upsampling operations that halve and double the dimensions respectively.
-Example: 64x64 input will work, but 65x65 will not.
+
+Number of downsampling operations: 4
+Minimum input size: 32x32 pixels (to avoid dimension issues during downsampling and upsampling)
 
 """
 import torch.nn.functional as F
@@ -25,6 +27,7 @@ class DoubleConv(nn.Module):
     """
     applies (convolution -> BatchNorm -> ReLU) * 2
     """
+# what aggregation function is used here?
 # why do we need mid_channels?
 # to have more flexibility between the two layers
     def __init__(self, in_channels, out_channels, mid_channels=None):
@@ -125,6 +128,7 @@ class UNet(nn.Module):
         # If you used `super().__init__()` in the `UNet` class, it would work perfectly fine in Python 3.x, as it automatically refers to the current class and instance. However, if you were using Python 2.x or wanted to maintain compatibility with both versions, you would need to use the full syntax `super(UNet, self).__init__()`. In modern Python code, using `super().__init__()` is preferred for its simplicity.
         super(UNet, self).__init__()
         self.n_channels = n_channels
+        # what is n_classes
         self.n_classes = n_classes
         self.bilinear = bilinear
 
