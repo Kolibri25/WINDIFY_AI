@@ -22,6 +22,7 @@ def train_model(model, data, epochs=1, learning_rate=0.001):
     criterion = nn.CrossEntropyLoss()  # Assuming a classification task
 
     for epoch in range(epochs):
+        # optimizer.zero_grad() resets the gradients of the model parameters
         optimizer.zero_grad()
         outputs = model(data)
         loss = criterion(outputs, data)  # Adjust this according to your task
@@ -40,4 +41,3 @@ test_data = create_test_data_gpu(batch_size=4, channels=3, height=64, width=64)
 
 # Train the model
 train_model(model, test_data, epochs=5, learning_rate=0.001)
-

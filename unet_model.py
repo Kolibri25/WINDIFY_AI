@@ -27,14 +27,25 @@ class DoubleConv(nn.Module):
     """
     applies (convolution -> BatchNorm -> ReLU) * 2
     """
-# what aggregation function is used here?
+# what aggregation function is used in the nn.Conv2d?
+# nn.Conv2d is a convolutional layer that applies a 2D convolution over an input signal composed of several input planes.
+# what aggreation does the 2d convolution do?
+# The 2D convolution aggregates information from a local region of the input feature map by applying a set of learnable filters (kernels) to compute the output feature map.
+# What is the mathematical operation behind the 2D convolution? What do we do with the values of the neighbouring pixels?
+# The mathematical operation behind the 2D convolution involves sliding a filter (kernel) over the input feature map and computing the dot product between the filter and the local region of the input. This operation aggregates information from neighboring pixels by summing the weighted contributions of those pixels, where the weights are defined by the filter values.
+# what is the purpose of the BatchNorm2d?
+# BatchNorm2d is a normalization layer that normalizes the input feature maps across the batch dimension, helping to stabilize and accelerate training by reducing internal covariate shift. 
+# Batch normalization also helps mitigate the vanishing gradient problem by normalizing the inputs to each layer, which can lead to more stable and faster convergence during training.
+
+
 # why do we need mid_channels?
 # to have more flexibility between the two layers
     def __init__(self, in_channels, out_channels, mid_channels=None):
         super().__init__()
         if not mid_channels:
             mid_channels = out_channels
-            # what does nn.Sequential do?
+            # what does nn.Sequential do? 
+            # nn.Sequential is a container module in PyTorch that allows you to create a sequential container of layers. It takes a list of layers and applies them in the order they are defined, making it easier to build complex models by stacking layers together.
         self.double_conv = nn.Sequential(nn.Conv2d(in_channels, mid_channels, kernel_size=3, padding=1), nn.BatchNorm2d(mid_channels), nn.ReLU(inplace=True),nn.Conv2d(mid_channels, out_channels, kernel_size=3, padding=1), nn.BatchNorm2d(out_channels), nn.ReLU(inplace=True))
 
     def forward(self, x): 
@@ -46,6 +57,11 @@ class Down(nn.Module):
     """Downscaling using maxpool then applying double conv module"""
     def __init__(self, in_channels, out_channels):
         super().__init__()
+        # what is 2d max pooling?
+        # 2D max pooling is a downsampling operation that reduces the spatial dimensions of the input feature map by taking the maximum value within a specified window (kernel) size, effectively retaining the most prominent features while discarding less important information.
+        # where is the kernel size defined?
+        # The kernel size for max pooling is defined in the nn.MaxPool2d constructor, where you can specify the size of the pooling window (e.g., kernel_size=2 for a 2x2 pooling window).
+
         self.maxpool_conv = nn.Sequential(nn.MaxPool2d(2), DoubleConv(in_channels, out_channels))
 
     def forward(self, x):
@@ -129,6 +145,7 @@ class UNet(nn.Module):
         super(UNet, self).__init__()
         self.n_channels = n_channels
         # what is n_classes
+        # 
         self.n_classes = n_classes
         self.bilinear = bilinear
 
