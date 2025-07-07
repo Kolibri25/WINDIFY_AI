@@ -3,8 +3,7 @@ import xarray as xr
 import os
 
 def load_and_save_barra_c2():
-    data_folder_ua = r"data\BARRA_C2\BARRA_C2_ua10"
-    data_folder_va = r"data\BARRA_C2\BARRA_C2_va10"
+    data_folder = "data/barra_downloads"
 
     months = ["10", "11", "12", "01"]
     years = [str(year) for year in range(1979, 2025)]
@@ -14,14 +13,14 @@ def load_and_save_barra_c2():
 
     for year in years:
         for month in months:
-            yyyymm = year + month
-            filename_ua = f"ua10_AUST-04_ERA5_historical_hres_BOM_BARRA-C2_v1_day_{yyyymm}-{yyyymm}.nc"
-            filepath_ua = os.path.join(data_folder_ua, filename_ua)
-            filename_va = f"va10_AUST-04_ERA5_historical_hres_BOM_BARRA-C2_v1_day_{yyyymm}-{yyyymm}.nc"
-            filepath_va = os.path.join(data_folder_va, filename_va)
+            filename_ua = f"uas_{year}-{month}.nc"
+            filepath_ua = os.path.join(data_folder, filename_ua)
+            filename_va = f"vas_{year}-{month}.nc"
+            filepath_va = os.path.join(data_folder, filename_va)
 
             if os.path.exists(filepath_ua):
                 ds_ua = xr.open_dataset(filepath_ua, decode_cf=False)
+                # Slicing the dataset to remove unwanted dimensions
                 ds_ua = ds_ua.isel(lon=slice(0, -7), lat=slice(5, -6))
                 ua_datasets.append(ds_ua)
                 print(f"{filename_ua} loaded successfully.")
