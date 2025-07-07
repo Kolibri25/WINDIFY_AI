@@ -1,4 +1,4 @@
-import unet_model as unet
+import models.unet_model as unet
 
 # create test data
 import torch

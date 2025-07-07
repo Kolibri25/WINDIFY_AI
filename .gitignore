@@ -1,3 +1,15 @@
 .venv
 barra_downloads
 downloaded_file.nc
+# Ignore all raw/netCDF files
+data/raw/*.nc
+
+# Ignore temp files
+*.pyc
+__pycache__/
+
+# Colab checkpoints
+*.ipynb_checkpoints
+
+# Virtual environments
+.venv/
