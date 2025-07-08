@@ -13,15 +13,15 @@ def load_and_save_barra_c2():
 
     for year in years:
         for month in months:
-            filename_ua = f"uas_{year}-{month}.nc"
+            filename_ua = f"uas_{year}_{month}.nc"
             filepath_ua = os.path.join(data_folder, filename_ua)
-            filename_va = f"vas_{year}-{month}.nc"
+            filename_va = f"vas_{year}_{month}.nc"
             filepath_va = os.path.join(data_folder, filename_va)
 
             if os.path.exists(filepath_ua):
                 ds_ua = xr.open_dataset(filepath_ua, decode_cf=False)
                 # Slicing the dataset to remove unwanted dimensions
-                ds_ua = ds_ua.isel(lon=slice(0, -7), lat=slice(5, -6))
+                # ds_ua = ds_ua.isel(lon=slice(0, -7), lat=slice(5, -6))
                 ua_datasets.append(ds_ua)
                 print(f"{filename_ua} loaded successfully.")
             else:
@@ -38,14 +38,14 @@ def load_and_save_barra_c2():
     ua_combined = xr.concat(ua_datasets, dim="time")
     va_combined = xr.concat(va_datasets, dim="time")
 
-    ua_combined.to_netcdf("ua10_gesamt.nc")
-    va_combined.to_netcdf("va10_gesamt.nc")
+    ua_combined.to_netcdf("data/barra_downloads/uas_gesamt.nc")
+    va_combined.to_netcdf("data/barra_downloads/vas_gesamt.nc")
 
     print("BARRA_C2 combined datasets saved as ua10_gesamt.nc and va10_gesamt.nc.")
 
 
 def load_and_save_era5():
-    base_folder = r"data\ERA5"
+    base_folder = "data/ERA5/"
     years = [str(year) for year in range(1979, 2025)]
 
     daily_filenames = [
@@ -79,9 +79,9 @@ def load_and_save_era5():
 
 
 if __name__ == "__main__":
-    print("Start loading and saving BARRA_C2 data ...")
+    # print("Start loading and saving BARRA_C2 data ...")
     load_and_save_barra_c2()
     print("Start loading and saving ERA5 data ...")
-    load_and_save_era5()
+    # load_and_save_era5()
     print("All data processed and saved.")
 

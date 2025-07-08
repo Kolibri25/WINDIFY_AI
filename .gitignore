@@ -3,6 +3,11 @@ barra_downloads
 downloaded_file.nc
 # Ignore all raw/netCDF files
 data/raw/*.nc
+*.nc
+
+# ignore data
+data/
+
 
 # Ignore temp files
 *.pyc

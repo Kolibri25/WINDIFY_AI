@@ -7,7 +7,7 @@ import xarray as xr
 # BARRA_C2 Tensor with ua and va components  #
 ##############################################
 
-def create_uv_tensor(ua_ds, va_ds, ua_varname='ua10', va_varname='va10'):
+def create_uv_tensor(ua_ds, va_ds, ua_varname='uas', va_varname='vas'):
     """
     Combines ua and va datasets into a PyTorch tensor with shape:
     (time, 2, height=lat, width=lon)
@@ -39,25 +39,27 @@ def create_uv_tensor(ua_ds, va_ds, ua_varname='ua10', va_varname='va10'):
 # ERA5 Tensor with u and v components           #
 #################################################
 
-def create_uv_tensor_era5(merged_ds, u_varname, v_varname):
+def create_uv_tensor_era5(u_array, v_array):
     """
-    Creates a PyTorch tensor from ERA5 dataset with u and v wind components.
+    Creates a PyTorch tensor from u and v wind arrays (e.g. ERA5).
 
     Args:
-        merged_ds (xarray.Dataset): Dataset with u and v variables.
-        u_varname (str): Variable name for u-component.
-        v_varname (str): Variable name for v-component.
+        u_array (np.ndarray or xarray.DataArray): u-component (time, lat, lon)
+        v_array (np.ndarray or xarray.DataArray): v-component (time, lat, lon)
 
     Returns:
         torch.Tensor: Tensor of shape (time, 2, height, width)
     """
-    u_array = merged_ds[u_varname].values
-    v_array = merged_ds[v_varname].values
+    # Ensure they’re both NumPy arrays
+    if hasattr(u_array, 'values'):
+        u_array = u_array.values
+    if hasattr(v_array, 'values'):
+        v_array = v_array.values
 
-    combined = np.stack([u_array, v_array], axis=1)
+    assert u_array.shape == v_array.shape, "Shape mismatch between u and v arrays"
+
+    combined = np.stack([u_array, v_array], axis=1)  # (time, 2, lat, lon)
     return torch.from_numpy(combined).float()
-
-
 
 
 #########################################
@@ -102,7 +104,7 @@ def split_tensor(tensor, train_frac=0.7, val_frac=0.15, test_frac=0.15):
 # Example usage and saving    #
 ###############################
 
-if __name__ == "__main__":
+def main():
     # Load BARRA_C2 data
     ua_ds = xr.open_dataset("ua10_gesamt.nc", decode_cf=False)
     va_ds = xr.open_dataset("va10_gesamt.nc", decode_cf=False)
