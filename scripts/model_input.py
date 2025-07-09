@@ -106,11 +106,11 @@ def split_tensor(tensor, train_frac=0.7, val_frac=0.15, test_frac=0.15):
 
 def main():
     # Load BARRA_C2 data
-    ua_ds = xr.open_dataset("ua10_gesamt.nc", decode_cf=False)
-    va_ds = xr.open_dataset("va10_gesamt.nc", decode_cf=False)
+    ua_ds = xr.open_dataset("uas_gesamt.nc", decode_cf=False)
+    va_ds = xr.open_dataset("vas_gesamt.nc", decode_cf=False)
 
     # Create tensor
-    tensor = create_uv_tensor(ua_ds, va_ds, ua_varname='ua10', va_varname='va10')
+    tensor = create_uv_tensor(ua_ds, va_ds, ua_varname='uas', va_varname='vas')
     print("BARRA_C2 Tensor shape:", tensor.shape)
 
     # Split into train/val/test sets
@@ -125,11 +125,15 @@ def main():
 
 
 
-    # Example for ERA5 (uncomment if needed)
-    # merged_ds = xr.open_dataset("ERA5_1980_merged.nc", decode_cf=False)
-    # tensor_era5 = create_uv_tensor_era5(
-    #     merged_ds,
-    #     u_varname='10m_u_component_of_wind_stream_oper',
-    #     v_varname='10m_v_component_of_wind_0'
-    # )
+    # Load ERA5 data
+    dataERA = "name.nc"
+    # rename koordinates 
+    dataERA_renamed = dataERA.rename({
+    "longitude": "lon",
+    "latitude": "lat",
+    "valid_time": "time"
+})
+    merged_era5 = xr.open_dataset(data_ERA_renamed, decode_cf=False)
+    tensor_era5 = create_uv_tensor_era5( 
+        merged_era5, u_varname='u10', v_varname='v10')
     # print("ERA5 Tensor shape:", tensor_era5.shape)
