@@ -126,7 +126,7 @@ def main():
 
 
     # Load ERA5 data
-    dataERA = "name.nc"
+    dataERA = "ERA5.nc"
     # rename koordinates 
     dataERA_renamed = dataERA.rename({
     "longitude": "lon",
