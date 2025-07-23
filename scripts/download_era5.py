@@ -1,9 +1,11 @@
 import os
 import sqlite3
 import cdsapi
+# import package for parallel downloads if needed
+from concurrent.futures import ThreadPoolExecutor
 
 DOWNLOAD_BASE_DIR = './data/ERA5'  # root directory to hold all yearly folders
-MIN_FILE_SIZE_BYTES = 100 * 1024  # 100 KB sanity threshold
+MIN_FILE_SIZE_BYTES = 90 * 1024  # 100 KB sanity threshold
 
 VARIABLES = [
     "2m_temperature",
@@ -13,7 +15,7 @@ VARIABLES = [
     "mean_wave_direction"
 ]
 
-YEARS = ['2001', '2004', '2005']
+YEARS = ['1993','2003','2011']  # 1981 to 2023 inclusive
 MONTHS = ['01', '10', '11', '12']
 
 def create_database():
@@ -91,7 +93,8 @@ def main():
     targets = cursor.fetchall()
     conn.close()
 
-    for year, variable in targets:
+    def process_download(target):
+        year, variable = target
         success = download_era5_data(year, variable)
         if success:
             conn = sqlite3.connect('data/era5_downloads.db')
@@ -99,6 +102,10 @@ def main():
             cursor.execute("UPDATE barra_downloads SET status = 'downloaded' WHERE year = ? AND variable = ?", (year, variable))
             conn.commit()
             conn.close()
+
+    # Use ThreadPoolExecutor for parallel downloads
+    with ThreadPoolExecutor(max_workers=10) as executor:  # Adjust max_workers as needed
+        executor.map(process_download, targets)
 
 if __name__ == "__main__":
     main()

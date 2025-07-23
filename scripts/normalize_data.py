@@ -1,4 +1,5 @@
 import xarray as xr
+import torch
 
 def normalize_data(ds, var_name):
     """
@@ -24,8 +25,8 @@ def normalize_data(ds, var_name):
     # Calculate mean and standard deviation
     mean = data.mean()
     std = data.std()
-    if std == 0:
-        raise ValueError(f"Standard deviation of '{var_name}' is zero, normalization not possible.")
+    if std == 0 or torch.isnan(torch.tensor(std.values)):
+        raise ValueError(f"Standard deviation of '{var_name}' is zero or NaN, normalization not possible.")
     # Normalize the data
     normalized_data = (data - mean) / std
     # Update the dataset with the normalized variable
