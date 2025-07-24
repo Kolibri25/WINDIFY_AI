@@ -80,6 +80,6 @@ model, losses = train_model(
     loss_fn=loss_fn,
     scheduler_fn=scheduler_fn,
     scheduler_kwargs=scheduler_kwargs,
-    device=torch.device("mps") if torch.backends.mps.is_available() else torch.device("cpu"),
+    device=torch.device("mps") if torch.backends.mps.is_available() else torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"),
     save_dir=SAVE_DIR
 )
