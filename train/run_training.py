@@ -21,6 +21,9 @@ elif torch.cuda.is_available():
 else:
     device = torch.device("cpu")
 
+IN_COLAB = 'google.colab' in sys.modules
+
+
 # ------------------
 # 1. Load training and validation Data
 # ------------------
@@ -74,7 +77,12 @@ loss_fn = nn.MSELoss()
 scheduler_fn = torch.optim.lr_scheduler.StepLR
 scheduler_kwargs = {'step_size': 10, 'gamma': 0.1}
 # Save directory for checkpoints
-SAVE_DIR = "checkpoints"
+if IN_COLAB:
+    from google.colab import drive
+    drive.mount('/content/drive')
+    SAVE_DIR = "/content/drive/MyDrive/WINDIFY_CHECKPOINTS"
+else:
+    SAVE_DIR = "checkpoints"
 os.makedirs(SAVE_DIR, exist_ok=True)
 # ------------------
 # 5. Train the Model
