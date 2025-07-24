@@ -10,6 +10,17 @@ import torch.nn as nn
 from src.models.unet_model import UNet
 from src.data.dataset import WindDownscalingDataset
 from src.train.trainer import train_model
+
+import torch
+import platform
+
+if torch.backends.mps.is_available() and platform.system() == "Darwin":
+    device = torch.device("mps")
+elif torch.cuda.is_available():
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
+
 # ------------------
 # 1. Load training and validation Data
 # ------------------
@@ -80,6 +91,6 @@ model, losses = train_model(
     loss_fn=loss_fn,
     scheduler_fn=scheduler_fn,
     scheduler_kwargs=scheduler_kwargs,
-    device=torch.device("mps") if torch.backends.mps.is_available() else torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"),
+    device=device,
     save_dir=SAVE_DIR
 )
