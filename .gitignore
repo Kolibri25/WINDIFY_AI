@@ -8,6 +8,9 @@ data/raw/*.nc
 # ignore data
 data/
 
+# but not this folder
+!src/data/
+
 
 # Ignore temp files
 *.pyc
