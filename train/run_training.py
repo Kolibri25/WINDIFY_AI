@@ -1,15 +1,15 @@
 
 import os
 import sys
-SRC_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),'..', 'src'))
+SRC_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
 if SRC_PATH not in sys.path:
     sys.path.append(SRC_PATH)
 import torch
 from torch.utils.data import DataLoader
 import torch.nn as nn
-from models.unet_model import UNet
-from data.dataset import WindDownscalingDataset
-from train.trainer import train_model
+from src.models.unet_model import UNet
+from src.data.dataset import WindDownscalingDataset
+from src.train.trainer import train_model
 # ------------------
 # 1. Load training and validation Data
 # ------------------
